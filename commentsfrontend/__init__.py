@@ -77,6 +77,7 @@ class CommentsFrontend(Comments):
 			remote_origin,
 			subject_id,
 			comment_body,
+			user_id='',
 		):
 		contains_forbidden_phrase = False
 		comment_body_lower = comment_body.lower()
@@ -90,9 +91,6 @@ class CommentsFrontend(Comments):
 				break
 		if not contains_forbidden_phrase:
 			return False
-		user_id = ''
-		if self.accounts.current_user:
-			user_id = self.accounts.current_user.id_bytes
 		if 'sent_forbidden_phrase' in self.callbacks:
 			for f in self.callbacks:
 				f(

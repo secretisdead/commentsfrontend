@@ -50,6 +50,7 @@ def post_comment(default_redirect_uri, user_id='', check_forbidden_phrase=False)
 			remote_origin,
 			request.form['subject_id'],
 			request.form['comment_body'],
+			user_id=user_id,
 		):
 		errors.append('Comment contained forbidden phrase')
 	if not errors:
