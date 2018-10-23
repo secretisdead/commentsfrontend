@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+{% block title %}Create comment{% endblock %}
+{% block content %}
+	<h1>Create comment</h1>
+	{% if redirect_uri %}
+		<nav>
+			<a href="{{ redirect_uri }}">Return</a>
+		</nav>
+	{% endif %}
+	{% for error in errors %}
+		<p class="form_error">{{ error }}</p>
+	{% endfor %}
+	{% from 'comments.jinja' import comment_form %}
+	{{ comment_form(subject_id, comment_body, redirect_uri) }}
+{% endblock %}

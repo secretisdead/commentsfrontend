@@ -1,0 +1,23 @@
+{
+	"db_prefix": "",
+
+	"allow_guest_comments": false,
+	"anonymous_comments": false,
+
+	"create_guest_comment_cooldown_amount": 24,
+	"create_guest_comment_cooldown_period": 86400,
+
+	"create_user_comment_cooldown_amount": 48,
+	"create_user_comment_cooldown_period": 86400,
+
+	"forbidden": {
+		"strings": [
+			"add forbidden strings here"
+		],
+		"res": [
+			"add forbidden (regular expression|regex) patterns here"
+		]
+	},
+
+	"maximum_body_length": 128
+}

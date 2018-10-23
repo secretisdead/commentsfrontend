@@ -1,0 +1,90 @@
+{% macro comment_form(subject_id, comment_body='', redirect_uri='') %}
+	{% set render_form = True %}
+	{% set create_comment_endpoint = 'comments_signed_out.create_comment' %}
+	{% if g.comments.accounts.current_user %}
+		{% set create_comment_endpoint = 'comments_signed_in.create_comment' %}
+		{% if g.comments.accounts.current_user.has_permission(group_names='manager') %}
+			{% set create_comment_endpoint = 'comments_manager.create_comment' %}
+		{% endif %}
+	{% elif not g.comments.config['allow_guest_comments'] %}
+		{% set render_form = False %}
+	{% endif %}
+	{% if render_form %}
+		<form action="{{ url_for(create_comment_endpoint) }}" method="post">
+			{% if not subject_id %}
+				<label for="subject_id">Subject</label>
+				<input 
+					id="subject_id" 
+					name="subject_id" 
+					type="text" 
+					placeholder="Subject ID">
+				<br>
+			{% else %}
+				<input 
+					id="subject_id" 
+					name="subject_id" 
+					type="hidden" 
+					value="{{ subject_id }}">
+			{% endif %}
+			<input 
+				id="redirect_uri" 
+				name="redirect_uri" 
+				type="hidden" 
+				value="{% if redirect_uri %}{{ redirect_uri }}{% else %}{{ request.url }}{% endif %}">
+			<label for="comment_body">Comment body</label>
+			<input 
+				id="comment_body" 
+				name="comment_body" 
+				type="text" 
+				value="{{ comment_body }}" 
+				maxlength="{{ g.comments.config['maximum_body_length'] }}">
+			<br>
+			<input type="submit" value="Submit comment">
+		</form>
+	{% endif %}
+{% endmacro %}
+
+{% macro comment_time_and_body(comment) %}
+	<td data-timestamp="{{ comment.creation_time }}">
+		{{ comment.creation_datetime.strftime('%Y-%m-%dT%H:%M:%S.%f%z') }}
+	</td>
+	<td class="comment_body">{{ comment.body|e }}</td>
+{% endmacro %}
+
+{% macro comments_table(comments) %}
+	{% from 'users.jinja' import user_avatar %}
+	{% if g.comments.accounts.current_user and g.comments.accounts.current_user.has_permission(group_names='manager') %}
+		<table class="comments">
+			{% for comment in comments.values() %}
+				<tr class="comment">
+					<td>{{ user_avatar(comment.user) }}</td>
+					{{ comment_time_and_body(comment) }}
+					<td>
+						<a 
+							href="{{ url_for('comments_manager.comments_list', id=comment.id) }}" 
+							title="View this comment in list">
+							View
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+	{% elif g.comments.config['anonymous_comments'] %}
+		<table class="comments"
+			{% for comment in comments.values() %}
+				<tr class="comment">
+					{{ comment_time_and_body(comment) }}
+				</div>
+			{% endfor %}
+		</table>
+	{% else %}
+		<table class="comments">
+			{% for comment in comments.values() %}
+				<tr class="comment">
+					<td>{{ user_avatar(comment.user) }}</td>
+					{{ comment_time_and_body(comment) }}
+				</tr>
+			{% endfor %}
+		</table>
+	{% endif %}
+{% endmacro %}
