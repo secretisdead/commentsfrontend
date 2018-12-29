@@ -1,3 +1,9 @@
+{#WARNING when noescape is passed to comment_time_and_body() or comments_table() #}
+{#WARNING comment.body is NOT ESCAPED, in case you want to insert actual markup into it #}
+{#WARNING while selectively manually escaping parts of it #}
+{#WARNING ensure untrusted parts of comment.body are properly escaped BEFORE calling either #}
+{#WARNING comment_time_and_body() or comments_table() on them when using noescape #}
+
 {% macro comment_form(subject_id, comment_body='', redirect_uri='') %}
 	{% set render_form = True %}
 	{% set create_comment_endpoint = 'comments_signed_out.create_comment' %}
@@ -44,14 +50,20 @@
 	{% endif %}
 {% endmacro %}
 
-{% macro comment_time_and_body(comment) %}
+{% macro comment_time_and_body(comment, noescape=False) %}
 	<td data-timestamp="{{ comment.creation_time }}">
 		{{ comment.creation_datetime.strftime('%Y-%m-%dT%H:%M:%S.%f%z') }}
 	</td>
-	<td class="comment_body">{{ comment.body|e }}</td>
+	<td class="comment_body">
+		{% if noescape %}
+			{{ comment.body }}
+		{% else %}
+			{{ comment.body|e }}
+		{% endif %}
+	</td>
 {% endmacro %}
 
-{% macro comments_table(comments) %}
+{% macro comments_table(comments, noescape=False) %}
 	{% from 'users.jinja' import user_avatar %}
 	{% if (
 			g.comments.accounts.current_user
@@ -62,7 +74,7 @@
 			{% for comment in comments.values() %}
 				<tr class="comment">
 					<td>{{ user_avatar(comment.user) }}</td>
-					{{ comment_time_and_body(comment) }}
+					{{ comment_time_and_body(comment, noescape=noescape) }}
 					<td>
 						<a 
 							href="{{ url_for('comments_manager.comments_list', id=comment.id) }}" 
@@ -78,7 +90,7 @@
 			<caption>Comments</caption>
 			{% for comment in comments.values() %}
 				<tr class="comment">
-					{{ comment_time_and_body(comment) }}
+					{{ comment_time_and_body(comment, noescape=noescape) }}
 				</div>
 			{% endfor %}
 		</table>
@@ -88,7 +100,7 @@
 			{% for comment in comments.values() %}
 				<tr class="comment">
 					<td>{{ user_avatar(comment.user) }}</td>
-					{{ comment_time_and_body(comment) }}
+					{{ comment_time_and_body(comment, noescape=noescape) }}
 				</tr>
 			{% endfor %}
 		</table>
