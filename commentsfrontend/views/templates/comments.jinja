@@ -16,7 +16,7 @@
 		{% set render_form = False %}
 	{% endif %}
 	{% if render_form %}
-		<form action="{{ url_for(create_comment_endpoint) }}" method="post">
+		<form class="comments_form" action="{{ url_for(create_comment_endpoint) }}" method="post">
 			{% if not subject_id %}
 				<label for="subject_id">Subject</label>
 				<input 
