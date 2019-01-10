@@ -65,45 +65,47 @@
 {% endmacro %}
 
 {% macro comments_table(comments, noescape=False) %}
-	{% from 'users.jinja' import user_avatar %}
-	{% if (
-			g.comments.accounts.current_user
-			and g.comments.accounts.current_user.has_permission(group_names='manager')
-		) %}
-		<table class="comments">
-			<caption>Comments</caption>
-			{% for comment in comments.values() %}
-				<tr class="comment">
-					<td>{{ user_avatar(comment.user) }}</td>
-					{{ comment_time_and_body(comment, noescape=noescape) }}
-					<td>
-						<a 
-							href="{{ url_for('comments_manager.comments_list', id=comment.id) }}" 
-							title="View this comment in list">
-							View
-						</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</table>
-	{% elif g.comments.config['anonymous_comments'] %}
-		<table class="comments"
-			<caption>Comments</caption>
-			{% for comment in comments.values() %}
-				<tr class="comment">
-					{{ comment_time_and_body(comment, noescape=noescape) }}
-				</div>
-			{% endfor %}
-		</table>
-	{% else %}
-		<table class="comments">
-			<caption>Comments</caption>
-			{% for comment in comments.values() %}
-				<tr class="comment">
-					<td>{{ user_avatar(comment.user) }}</td>
-					{{ comment_time_and_body(comment, noescape=noescape) }}
-				</tr>
-			{% endfor %}
-		</table>
+	{% if comments.values() %}
+		{% from 'users.jinja' import user_avatar %}
+		{% if (
+				g.comments.accounts.current_user
+				and g.comments.accounts.current_user.has_permission(group_names='manager')
+			) %}
+			<table class="comments">
+				<caption>Comments</caption>
+				{% for comment in comments.values() %}
+					<tr class="comment">
+						<td class="commenter">{{ user_avatar(comment.user) }}</td>
+						{{ comment_time_and_body(comment, noescape=noescape) }}
+						<td>
+							<a 
+								href="{{ url_for('comments_manager.comments_list', id=comment.id) }}" 
+								title="View this comment in list">
+								View
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% elif g.comments.config['anonymous_comments'] %}
+			<table class="comments"
+				<caption>Comments</caption>
+				{% for comment in comments.values() %}
+					<tr class="comment">
+						{{ comment_time_and_body(comment, noescape=noescape) }}
+					</div>
+				{% endfor %}
+			</table>
+		{% else %}
+			<table class="comments">
+				<caption>Comments</caption>
+				{% for comment in comments.values() %}
+					<tr class="comment">
+						<td class="commenter">{{ user_avatar(comment.user) }}</td>
+						{{ comment_time_and_body(comment, noescape=noescape) }}
+					</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
 	{% endif %}
 {% endmacro %}
