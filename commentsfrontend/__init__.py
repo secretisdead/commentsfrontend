@@ -1,5 +1,6 @@
 import time
 import re
+from ipaddress import ip_address
 
 from comments import Comments
 
@@ -124,4 +125,21 @@ class CommentsFrontend(Comments):
 			scope='delete_comment',
 			subject_id=user_id,
 			object_id=comment.id_bytes,
+		)
+
+	def remove_by_user(self, user_id, subject_id=''):
+		super().delete_user_comments(user_id)
+		self.access_log.create_log(
+			scope='remove_comments_by_user',
+			subject_id=subject_id,
+			object_id=user_id,
+		)
+
+	def remove_by_remote_origin(self, remote_origin, subject_id=''):
+		remote_origin = ip_address(remote_origin)
+		super().delete_remote_origin_comments(str(remote_origin))
+		self.access_log.create_log(
+			scope='remove_comments_by_remote_origin',
+			subject_id=subject_id,
+			object_id=remote_origin.packed,
 		)
