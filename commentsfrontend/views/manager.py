@@ -107,3 +107,22 @@ def comments_list():
 		total_results=total_results,
 		total_pages=math.ceil(total_results / pagination['perpage']),
 	)
+
+@comments_manager.route('/comments/remove', methods=['GET', 'POST'])
+@require_permissions(group_names='manager')
+def remove_comments():
+	if 'POST' != request.method:
+		return render_template('mass_remove_comments.html')
+	if 'user_id' in request.form and request.form['user_id']:
+		g.comments.remove_by_user(
+			request.form['user_id'],
+			g.comments.accounts.current_user.id_bytes,
+		)
+	elif 'remote_origin' in request.form and request.form['remote_origin']:
+		g.comments.remove_by_remote_origin(
+			request.form['remote_origin'],
+			g.comments.accounts.current_user.id_bytes,
+		)
+	else:
+		abort(400)
+	return redirect(url_for('comments_manager.comments_list'), code=303)

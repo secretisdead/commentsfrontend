@@ -2,6 +2,13 @@
 {% block title %}Comments list{% endblock %}
 {% block content %}
 	<h1>Comments list</h1>
+	<nav>
+		<a 
+			href="{{ url_for('comments_manager.remove_comments') }}" 
+			title="Mass remove comments">
+			Mass remove comments
+		</a>
+	</nav>
 	{% from 'users.jinja' import edit_user_link, user_display %}
 	{% macro render_result(result) %}
 		<tr>

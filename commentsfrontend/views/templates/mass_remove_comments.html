@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block title %}Mass remove comments{% endblock %}
+{% block content %}
+	<h1>Mass remove comments</h1>
+	<nav>
+		<a href="{{ url_for('comments_manager.comments_list') }}">Return</a>
+	</nav>
+	<form method="post">
+		<label for="user_id">User ID</label>
+		<input 
+			id="user_id" 
+			name="user_id" 
+			type="text">
+		<br>
+		<label for="remote_origin">Remote origin</label>
+		<input 
+			id="remote_origin" 
+			name="remote_origin" 
+			type="text">
+		<br>
+		<input type="submit" value="Remove">
+	</form>
+{% endblock %}
