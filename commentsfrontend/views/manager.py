@@ -90,6 +90,8 @@ def comments_list():
 		elif 'body' == field:
 			filter['body'] = '%' + escape(value) + '%'
 		elif 'user_id' == field:
+			if 'guest' == value:
+				value = ''
 			filter['user_ids'] = value
 
 	pagination = pagination_from_request('creation_time', 'desc', 0, 32)
