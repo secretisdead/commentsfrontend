@@ -7,13 +7,21 @@ from flask import request, abort
 
 from .. import CommentsFrontend
 
-def initialize(config, accounts, access_log, engine, install):
+def initialize(
+		config,
+		accounts,
+		access_log,
+		engine,
+		install=False,
+		connection=None,
+	):
 	g.comments = CommentsFrontend(
 		config,
 		accounts,
 		access_log,
 		engine,
 		install=install,
+		connection=connection,
 	)
 
 # require objects or abort

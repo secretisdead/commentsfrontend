@@ -5,8 +5,21 @@ from ipaddress import ip_address
 from comments import Comments
 
 class CommentsFrontend(Comments):
-	def __init__(self, config, accounts, access_log, engine, install=False):
-		super().__init__(engine, config['db_prefix'], install)
+	def __init__(
+			self,
+			config,
+			accounts,
+			access_log,
+			engine,
+			install=False,
+			connection=None,
+		):
+		super().__init__(
+			engine,
+			config['db_prefix'],
+			install=install,
+			connection=connection,
+		)
 
 		self.config = config
 		self.accounts = accounts
